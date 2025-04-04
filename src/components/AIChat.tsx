@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sparkles, Send, ArrowLeft, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Progress } from '@/components/ui/progress';
 
 interface Message {
   id: string;
@@ -114,6 +115,8 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
   
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [messageCount, setMessageCount] = useState(1);
+  const maxFreeMessages = 10;
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
     "Tell me more about my personality type",
     "How can I improve my weaknesses?",
@@ -137,6 +140,19 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
     
+    // Check if user has reached the message limit for free plan
+    if (messageCount >= maxFreeMessages) {
+      const limitMessage: Message = {
+        id: Date.now().toString(),
+        sender: 'bot',
+        text: "You've reached the maximum number of messages allowed on the free plan. Please upgrade to continue our conversation.",
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, limitMessage]);
+      return;
+    }
+    
     const userMessage: Message = {
       id: Date.now().toString(),
       sender: 'user',
@@ -147,6 +163,7 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsTyping(true);
+    setMessageCount(prev => prev + 1);
     
     // Simulate AI thinking and typing
     try {
@@ -191,6 +208,9 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
+
+  // Calculate the progress percentage for free plan message usage
+  const messageProgressPercentage = (messageCount / maxFreeMessages) * 100;
 
   return (
     <div className="w-full max-w-4xl mx-auto h-[80vh] flex flex-col bg-background rounded-lg shadow-lg overflow-hidden">
@@ -318,16 +338,36 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
         <Button 
           onClick={handleSendMessage} 
           className="ml-2 rounded-full h-10 w-10 p-0 flex items-center justify-center"
-          disabled={!inputMessage.trim() || isTyping}
+          disabled={!inputMessage.trim() || isTyping || messageCount >= maxFreeMessages}
         >
           <Send className="h-5 w-5" />
         </Button>
       </div>
       
-      {/* Free plan notice */}
-      <div className="px-4 py-2 border-t bg-muted/30 flex items-center justify-center text-xs text-muted-foreground">
-        <Sparkles className="h-3 w-3 mr-1" />
-        <span>Free Plan: Limited to 10 messages per day. <button className="text-primary underline">Upgrade for unlimited access</button></span>
+      {/* Free plan progress and notice */}
+      <div className="px-4 py-2 border-t bg-muted/30">
+        {/* Message usage progress bar */}
+        <div className="mb-2">
+          <div className="flex justify-between items-center text-xs mb-1">
+            <span className="text-muted-foreground">Messages: {messageCount}/{maxFreeMessages}</span>
+            <span className="text-muted-foreground">{Math.round(messageProgressPercentage)}% used</span>
+          </div>
+          <Progress 
+            value={messageProgressPercentage} 
+            className="h-2"
+            indicatorClassName={cn(
+              messageProgressPercentage < 50 ? "bg-green-500" :
+              messageProgressPercentage < 80 ? "bg-amber-500" :
+              "bg-red-500"
+            )}
+          />
+        </div>
+        
+        {/* Upgrade notice */}
+        <div className="flex items-center justify-center text-xs text-muted-foreground">
+          <Sparkles className="h-3 w-3 mr-1" />
+          <span>Free Plan: Limited to {maxFreeMessages} messages per day. <button className="text-primary underline">Upgrade for unlimited access</button></span>
+        </div>
       </div>
     </div>
   );
