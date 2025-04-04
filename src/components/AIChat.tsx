@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sparkles, Send, ArrowLeft, Info, Home } from 'lucide-react';
+import { Sparkles, Send, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import HomeNavigation from './HomeNavigation';
@@ -27,10 +27,8 @@ interface AIChatProps {
 }
 
 const generateBotResponse = (userMessage: string, dominantTrait: string): Promise<AIResponse> => {
-  // Simulate AI processing delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Simple response logic based on message content and dominant trait
       let response = '';
       let followupQuestions: string[] = [];
       
@@ -140,7 +138,6 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
     
-    // Check if user has reached the message limit for free plan
     if (messageCount >= maxFreeMessages) {
       const limitMessage: Message = {
         id: Date.now().toString(),
@@ -165,7 +162,6 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
     setIsTyping(true);
     setMessageCount(prev => prev + 1);
     
-    // Simulate AI thinking and typing
     try {
       const response = await generateBotResponse(userMessage.text, dominantTrait);
       
@@ -204,17 +200,14 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
     setInputMessage(question);
   };
   
-  // Format timestamp to a readable format
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Calculate the progress percentage for free plan message usage
   const messageProgressPercentage = (messageCount / maxFreeMessages) * 100;
 
   return (
     <div className="w-full max-w-4xl mx-auto h-[80vh] flex flex-col bg-background rounded-lg shadow-lg overflow-hidden">
-      {/* Chat header */}
       <div className="p-4 border-b flex items-center justify-between bg-muted/30">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" onClick={onReturn} className="mr-2">
@@ -226,7 +219,7 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
               <AvatarFallback className="bg-primary text-primary-foreground">AI</AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="font-medium text-sm">AI Personality Mentor</h3>
+              <h3 className="font-medium text-sm">PersonaBot</h3>
               <p className="text-xs text-muted-foreground flex items-center">
                 <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
                 Online
@@ -239,7 +232,6 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
         </Button>
       </div>
       
-      {/* Chat messages */}
       <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
         <div className="space-y-4">
           {messages.map((message) => (
@@ -307,26 +299,22 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
         </div>
       </ScrollArea>
       
-      {/* Suggested questions */}
-      {suggestedQuestions.length > 0 && (
-        <div className="px-4 py-2 border-t border-border overflow-x-auto whitespace-nowrap">
-          <div className="flex space-x-2">
-            {suggestedQuestions.map((question, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => handleSuggestedQuestion(question)}
-                className="flex-shrink-0"
-              >
-                {question}
-              </Button>
-            ))}
-          </div>
+      <div className="px-4 py-2 border-t border-border overflow-x-auto whitespace-nowrap">
+        <div className="flex space-x-2">
+          {suggestedQuestions.map((question, index) => (
+            <Button
+              key={index}
+              variant="outline"
+              size="sm"
+              onClick={() => handleSuggestedQuestion(question)}
+              className="flex-shrink-0"
+            >
+              {question}
+            </Button>
+          ))}
         </div>
-      )}
+      </div>
       
-      {/* Input area */}
       <div className="p-4 border-t flex items-center">
         <Input
           value={inputMessage}
@@ -344,9 +332,7 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
         </Button>
       </div>
       
-      {/* Free plan progress and notice */}
       <div className="px-4 py-2 border-t bg-muted/30">
-        {/* Message usage progress bar */}
         <div className="mb-2">
           <div className="flex justify-between items-center text-xs mb-1">
             <span className="text-muted-foreground">Messages: {messageCount}/{maxFreeMessages}</span>
@@ -363,7 +349,6 @@ const AIChat: React.FC<AIChatProps> = ({ userName, dominantTrait, onReturn }) =>
           />
         </div>
         
-        {/* Upgrade notice */}
         <div className="flex items-center justify-center text-xs text-muted-foreground">
           <Sparkles className="h-3 w-3 mr-1" />
           <span>Free Plan: Limited to {maxFreeMessages} messages per day. <button className="text-primary underline">Upgrade for unlimited access</button></span>
