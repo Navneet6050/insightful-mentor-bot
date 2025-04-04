@@ -1,12 +1,12 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sparkles, Send, ArrowLeft, Info } from 'lucide-react';
+import { Sparkles, Send, ArrowLeft, Info, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import HomeNavigation from './HomeNavigation';
 
 interface Message {
   id: string;

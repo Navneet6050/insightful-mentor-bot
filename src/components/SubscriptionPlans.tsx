@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Crown, Sparkles, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import HomeNavigation from './HomeNavigation';
 
 interface SubscriptionPlansProps {
   onReturn: () => void;
@@ -21,6 +22,8 @@ const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({ onReturn }) => {
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 py-8 fade-in-up">
+      <HomeNavigation onBack={onReturn} />
+      
       <h2 className="text-3xl font-bold text-center mb-3">Enhance Your Journey</h2>
       <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
         Choose the plan that fits your personal growth needs. Unlock deeper insights 

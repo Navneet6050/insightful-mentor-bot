@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 import { ArrowRight, Brain, Lightbulb, Users, Heart, Crown, BarChart, Coffee, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import HomeNavigation from './HomeNavigation';
 
 interface PersonalityTraits {
   logical: number;
@@ -46,10 +46,8 @@ const PersonalityResults: React.FC<PersonalityResultsProps> = ({
   const [showFull, setShowFull] = useState(false);
   const [animatedTraits, setAnimatedTraits] = useState<string[]>([]);
 
-  // Calculate max possible value for normalization
-  const maxPossibleValue = 20; // Based on quiz design
+  const maxPossibleValue = 20;
 
-  // Normalize trait values for display
   const normalizedTraits = Object.entries(personalityTraits).map(([trait, value]) => ({
     trait,
     normalizedValue: (value / maxPossibleValue) * 100
@@ -226,7 +224,6 @@ const PersonalityResults: React.FC<PersonalityResultsProps> = ({
     }
   };
 
-  // Animate traits appearing one by one
   useEffect(() => {
     const traitNames = normalizedTraits.map(t => t.trait);
     let currentIndex = 0;
@@ -247,13 +244,14 @@ const PersonalityResults: React.FC<PersonalityResultsProps> = ({
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 pb-8 fade-in-up">
+      <HomeNavigation showBack={false} />
+      
       <h2 className="text-3xl font-bold text-center mb-3">Your Personality Profile</h2>
       <p className="text-center text-muted-foreground mb-8">
         {userName}, here's your unique personality breakdown based on your responses.
       </p>
       
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        {/* Dominant trait card */}
         <Card className={cn(
           "shadow-card col-span-full md:col-span-1",
           "border-t-4",
@@ -334,7 +332,6 @@ const PersonalityResults: React.FC<PersonalityResultsProps> = ({
           </CardFooter>
         </Card>
         
-        {/* Trait breakdown */}
         <Card className="shadow-card col-span-full md:col-span-1">
           <CardHeader>
             <CardTitle className="text-xl">Your Personality Breakdown</CardTitle>

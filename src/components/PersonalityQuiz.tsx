@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -6,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, ArrowLeft, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import HomeNavigation from './HomeNavigation';
 
 interface Question {
   id: number;
@@ -167,11 +167,7 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onComplete, userName 
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   useEffect(() => {
-    // Simulating adaptive question logic based on previous answers
     if (currentQuestionIndex > 3 && answers.length >= 3) {
-      // Here we could modify future questions based on answer patterns
-      // This is a simplified example - in a real app, you'd have more complex logic
-      
       const mostRecentAnswers = answers.slice(-3);
       const hasLogicalTendency = mostRecentAnswers.some(optionIndex => 
         questions[currentQuestionIndex - 3 + mostRecentAnswers.indexOf(optionIndex)]
@@ -182,14 +178,12 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onComplete, userName 
           .options[optionIndex].value.creative);
       
       // Could adjust future questions based on these tendencies
-      // This would be more sophisticated in a production app
     }
   }, [currentQuestionIndex, answers, questions]);
 
   const handleOptionSelect = (optionIndex: number) => {
     setFadeIn(false);
     
-    // Update personality traits based on selected option
     const selectedOption = currentQuestion.options[optionIndex];
     const newTraits = { ...personalityTraits };
     
@@ -199,18 +193,15 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onComplete, userName 
     
     setPersonalityTraits(newTraits);
     
-    // Record the answer
     const newAnswers = [...answers];
     newAnswers[currentQuestionIndex] = optionIndex;
     setAnswers(newAnswers);
     
-    // Move to next question with a slight delay for animation
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(prevIndex => prevIndex + 1);
         setFadeIn(true);
       } else {
-        // Quiz completed
         const dominantTrait = getDominantTrait(newTraits);
         onComplete(newTraits, dominantTrait);
       }
@@ -236,7 +227,6 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onComplete, userName 
       setFadeIn(false);
       
       setTimeout(() => {
-        // Revert personality traits based on previous answer
         const prevAnswer = answers[currentQuestionIndex - 1];
         if (prevAnswer !== undefined) {
           const prevOption = questions[currentQuestionIndex - 1].options[prevAnswer];
@@ -264,6 +254,12 @@ const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onComplete, userName 
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
+      <HomeNavigation onBack={() => {
+        if (window.confirm("Are you sure you want to exit the quiz? Your progress will be lost.")) {
+          window.location.href = "/";
+        }
+      }} />
+      
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-center mb-2">Discovering Your True Self</h2>
         <p className="text-center text-muted-foreground">
