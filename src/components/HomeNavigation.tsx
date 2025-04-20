@@ -26,7 +26,11 @@ const HomeNavigation: React.FC<HomeNavigationProps> = ({
   };
 
   const handleHome = () => {
+    // Instead of navigating to '/', we'll navigate to the quiz page
+    // This ensures the home button always returns to the quiz page
     navigate('/');
+    // Force a page reload to ensure we're at the initial state of the app
+    window.location.reload();
   };
 
   return (

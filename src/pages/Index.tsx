@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SignInForm from '@/components/SignInForm';
 import PersonalityQuiz from '@/components/PersonalityQuiz';
 import PersonalityResults from '@/components/PersonalityResults';
 import SubscriptionPlans from '@/components/SubscriptionPlans';
 import AIChat from '@/components/AIChat';
 import { Sparkles, Brain } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 // Define the possible app states
 type AppState = 'signin' | 'quiz' | 'results' | 'subscriptions' | 'chat';
@@ -35,15 +36,41 @@ const Index = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [personalityTraits, setPersonalityTraits] = useState<PersonalityTraits | null>(null);
   const [dominantTrait, setDominantTrait] = useState<string>('');
+  
+  // If we have userData stored in localStorage, retrieve it
+  useEffect(() => {
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      setUserData(JSON.parse(storedUserData));
+      
+      // Check if we have any other stored data
+      const storedTraits = localStorage.getItem('personalityTraits');
+      const storedDominantTrait = localStorage.getItem('dominantTrait');
+      
+      if (storedTraits) {
+        setPersonalityTraits(JSON.parse(storedTraits));
+      }
+      
+      if (storedDominantTrait) {
+        setDominantTrait(storedDominantTrait);
+        setAppState('quiz'); // Default to quiz when returning home
+      }
+    }
+  }, []);
 
   const handleSignIn = (data: UserData) => {
     setUserData(data);
+    // Store user data in localStorage
+    localStorage.setItem('userData', JSON.stringify(data));
     setAppState('quiz');
   };
 
   const handleQuizCompletion = (results: PersonalityTraits, dominant: string) => {
     setPersonalityTraits(results);
     setDominantTrait(dominant);
+    // Store results in localStorage
+    localStorage.setItem('personalityTraits', JSON.stringify(results));
+    localStorage.setItem('dominantTrait', dominant);
     setAppState('results');
   };
 
