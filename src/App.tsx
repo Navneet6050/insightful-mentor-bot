@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import HelpCenter from './components/HelpCenter';
+import HelpCenter from './components/HelpCenter'; // Ensure HelpCenter is imported
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,7 +22,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-
+        
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -33,11 +33,17 @@ const App = () => {
           <button
             onClick={toggleHelpCenter}
             style={{
-              position: 'fixed', bottom: '20px', right: '20px', border: 'none', backgroundColor: 'transparent', cursor: 'pointer'
+              position: 'fixed',
+              bottom: '20px',
+              right: '20px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              zIndex: 1000 // Make sure it's on top of other elements
             }}
           >
             <img
-              src="/bubble-chat.png"
+              src="/bubble-chat.png" // Ensure this path is correct (public folder)
               alt="Chatbot"
               style={{ width: '50px', height: '50px' }}
             />
@@ -45,7 +51,7 @@ const App = () => {
 
           {/* Show HelpCenter Modal */}
           {showHelpCenter && <HelpCenter />}
-          
+
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
